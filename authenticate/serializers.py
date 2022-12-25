@@ -4,6 +4,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from authenticate.models import Seller, UserProfile
+from order_payment.models import PayOut
 
 
 class PermissionSerializer(serializers.ModelSerializer):
@@ -16,24 +17,42 @@ class GroupSerializer(serializers.ModelSerializer):
         model = Group
         fields = '__all__'
 
+class AvtSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['avt']
+
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserProfile
-        fields =('gender', 'birthday','phone','address','account_no','item_count','avt')
-        # fields= "__all__"
+        fields =('gender', 'birthday','phone','address','account_no','cart_count','avt')
+        create_only_fields = ["cart_count"]
+    def get_photo_url(self, obj):
+        request = self.context.get('request')
+        avt_url = obj.avt.url
+        return request.build_absolute_uri(avt_url)
         
 class UserSerializer(serializers.ModelSerializer):
-    userprofile = UserProfileSerializer()
+    user_profile = UserProfileSerializer()
+    
     class Meta:
         model = User
-        fields = ['username', 'password','first_name', 'last_name','email', 'userprofile']
-        extra_kwargs = {          
+        fields = ['id','username', 'password','first_name', 'last_name','email', 'user_profile']
+        extra_kwargs = {
             'password': {'write_only': True,'required': False},
-            #'email': {'required': True},   
-            }
+            'username': {'required': False}}
+        create_only_fields = ["username"]
+
+    def to_representation(self, instance):
+        role = []
+        for group in instance.groups.all():
+            role.append(group.name)
+        response = super().to_representation(instance)
+        response['ROLE'] = role
+        return response
 
     def create(self, validated_data):
-        profile = validated_data.pop('userprofile')
+        profile = validated_data.pop('user_profile')
         user = User.objects.create_user(**validated_data)
         user.set_password(validated_data['password'])
         UserProfile.objects.create(user=user,**profile)
@@ -42,27 +61,36 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        profile = validated_data.pop('userprofile')
+        profile = validated_data.pop('user_profile')
         instance.first_name = validated_data.get('first_name',instance.first_name)
         instance.last_name = validated_data.get('last_name',instance.last_name)
         instance.email = validated_data.get('email',instance.email)
         instance.save()
-        userprofile= instance.userprofile
-        userprofile.gender = profile.get('gender',userprofile.gender)
-        userprofile.birthday = profile.get('birthday',userprofile.birthday)
-        userprofile.address = profile.get('address',userprofile.address)
-        userprofile.phone = profile.get('phone',userprofile.phone)
-        userprofile.account_no = profile.get('account_no',userprofile.account_no)
-        userprofile.item_count = profile.get('item_count',userprofile.item_count)
-        userprofile.avt = profile.get('avt',userprofile.avt)
-        userprofile.save()
+        userProfile= instance.user_profile
+        userProfile.gender = profile.get('gender',userProfile.gender)
+        userProfile.birthday = profile.get('birthday',userProfile.birthday)
+        userProfile.address = profile.get('address',userProfile.address)
+        userProfile.phone = profile.get('phone',userProfile.phone)
+        userProfile.account_no = profile.get('account_no',userProfile.account_no)
+        userProfile.save()
         return instance
 
 class AdminSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'password','first_name', 'last_name','email','is_staff']
-        extra_kwargs = {'password': {'write_only': True}}
+        extra_kwargs = {
+            'password': {'write_only': True,'required': False},
+            'username': {'required': False}}
+        write_once_fields = ["username"]
+
+    def to_representation(self, instance):
+        role = []
+        for group in instance.groups.all():
+            role.append(group.name)
+        response = super().to_representation(instance)
+        response['ROLE'] = role
+        return response
 
     def create(self, validated_data):
         user = User.objects.create_superuser(**validated_data)
@@ -74,8 +102,8 @@ class AdminSerializer(serializers.ModelSerializer):
         else:
             role="ADMIN"
         user.save()
-        user_group = Group.objects.get(name=role)
-        user.groups.add(user_group)
+        userGroup = Group.objects.get(name=role)
+        user.groups.add(userGroup)
         return user
 
 class LoginSerializer(TokenObtainPairSerializer):
@@ -92,34 +120,43 @@ class SellerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Seller
         fields = '__all__'
+        extra_kwargs ={"user":{'required':False}}
+        write_once_fields = ["user"]
+
+    def get_photo_url(self, obj):
+        request = self.context.get('request')
+        logo_url = obj.logo.url
+        return request.build_absolute_uri(logo_url)
+
     def create(self, validated_data):
-        user_profile = validated_data.get('user')
-        user = User.objects.get(userprofile=user_profile)
-        supplier = Seller.objects.create(**validated_data)
-        user_group = Group.objects.get(name="SELLER")
-        user.groups.add(user_group)
-        profile = UserProfile.objects.get(user_id=user_profile)
+        userProfile = validated_data.get('user')
+        user = User.objects.get(user_profile=userProfile)
+        seller = Seller.objects.create(**validated_data)
+        accountNo = validated_data.get('account_no')
+        PayOut.objects.create(seller=seller, account = accountNo)
+
+        userGroup = Group.objects.get(name="SELLER")
+        user.groups.add(userGroup)
+        profile = UserProfile.objects.get(user_id=userProfile)
         profile.is_seller = True
         profile.save()
-        return supplier
-    def update(self, instance, validated_data):
-        instance.modified_at = datetime.now()
-        instance.account_no = validated_data.get('account_no',instance.account_no)
-        instance.name_store = validated_data.get('name_store',instance.name_store)
-        instance.facebook = validated_data.get('facebook',instance.facebook)
-        instance.product_count = validated_data.get('product_count',instance.product_count)
-        instance.follower_count = validated_data.get('follower_count',instance.follower_count)
-        instance.rating_average = validated_data.get('rating_average',instance.rating_average)
-        instance.response_rate = validated_data.get('response_rate',instance.response_rate)
-        instance.logo = validated_data.get('logo',instance.logo)
-        instance.sku = validated_data.get('sku',instance.sku)
-        instance.save()
-        return instance
+        return seller
 
-class ChangePasswordSerializer(serializers.ModelSerializer):
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-    confirm_newpass = serializers.CharField(required=True)
-    class Meta:
-        model = User
-        fields = ['old_password', 'new_password','confirm_newpass']
+    def update(self, instance, validated_data):
+        # instance.modified_at = datetime.now()
+        # instance.account_no = validated_data.get('account_no',instance.account_no)
+        # instance.name_store = validated_data.get('name_store',instance.name_store)
+        # instance.facebook = validated_data.get('facebook',instance.facebook)
+        # instance.product_count = validated_data.get('product_count',instance.product_count)
+        # instance.follower_count = validated_data.get('follower_count',instance.follower_count)
+        # instance.rating_average = validated_data.get('rating_average',instance.rating_average)
+        # instance.response_rate = validated_data.get('response_rate',instance.response_rate)
+        # instance.logo = validated_data.get('logo',instance.logo)
+        # instance.save()
+        PayOut = instance.pay_out
+        PayOut.account = instance.account_no
+        PayOut.save()
+        return super().update(instance, validated_data)
+        
+        
+

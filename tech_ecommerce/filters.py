@@ -21,5 +21,5 @@ class ProductFilter(filters.FilterSet):
     ordering = filters.OrderingFilter(fields=['category', 'price', 'rating_average'])
     class Meta:
         model = Products
-        fields = ['id','price_lte','price_lte','rating_average_gte','rating_average_lte','category','seller','name','color',
+        fields = ['price_gte','price_lte','rating_average_gte','rating_average_lte','category','seller','name','color',
         'brand','ram','rom','screen_gte','screen_gte','battery_gte','battery_lte']

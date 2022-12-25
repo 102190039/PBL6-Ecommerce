@@ -1,27 +1,19 @@
 
 from datetime import datetime
-from django.http.request import QueryDict, MultiValueDict
 from rest_framework import serializers
-from authenticate.models import Seller
-from authenticate.serializers import SellerSerializer
 from tech_ecommerce.models import Interactive, CartItem, Categories, ImgProducts, Options, ProductChilds, ProductVariants, Products, Speficication
 
 class ImgProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = ImgProducts
         fields = '__all__'
-    def create(self, validated_data):
-        return ImgProducts.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        instance.link = validated_data.get('link', instance.link)
-        instance.save()
-        return instance
 
 
 class SpeficicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Speficication
-        fields = '__all__'
+        fields = ['brand', 'cpu_speed', 'gpu', 'ram', 'rom',
+            'screen_size', 'battery_capacity', 'weight', 'chip_set', 'material']
     def create(self, validated_data):
         return Speficication.objects.create(**validated_data)
     def update(self, instance, validated_data):
@@ -42,17 +34,12 @@ class ProductChildSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductChilds
         fields = '__all__'
-    def create(self, validated_data):
-        return ProductChilds.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        instance.sku = validated_data.get('sku', instance.sku)
-        instance.name = validated_data.get('name', instance.name)
-        instance.price = validated_data.get('price', instance.price)
-        instance.iventory_status = validated_data.get('iventory_status', instance.iventory_status)
-        instance.selected = validated_data.get('selected', instance.selected)
-        instance.thumbnail_url = validated_data.get('thumbnail_url', instance.thumbnail_url)
-        instance.save()
-        return instance
+        extra_kwargs = {
+            'product': {'required': False},
+            'seller': {'required': False},
+            'name_url': {'required': False,'write_only':True},
+            }
+        create_only_fields = ["product","seller","name_url"]
 
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,12 +47,18 @@ class OptionSerializer(serializers.ModelSerializer):
         fields = '__all__'
         read_only_fileds=['id']
     def validate(self, data):    
-        option_new = Options.objects.get(product_variant=data['product_variant'],product_child=data['product_child'])
-        if not self.instance and option_new is not None:
-            raise serializers.ValidationError({"option": "Variant option is existed"})
-        if self.instance and option_new:
-            if self.instance.product_child != option_new.product_child:
-                raise serializers.ValidationError({"option": "Multi product childs must not be in a variant option"})      
+        optionNew = Options.objects.filter(
+            product_variant=data['product_variant'],
+            product_child=data['product_child'])
+        if not self.instance and optionNew.count() > 0:
+            raise serializers.ValidationError({
+                "option": "Variant option is existed"
+            })
+        if self.instance and optionNew:
+            if self.instance.product_child != optionNew[0].product_child:
+                raise serializers.ValidationError({
+                    "option": "Multi product childs must not be in a variant option"
+                })      
         return data
      
 class ProductVariantSerializer(serializers.ModelSerializer):
@@ -79,23 +72,31 @@ class ProductVariantSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVariants
         fields = '__all__'
-        read_only_fileds=['id']
+        extra_kwargs = {
+            'product': {'required': False},
+            }
+        create_only_fields = ["product"]
     # Kiểm tra product variant chỉ chứa 1 (Màu, Dung lượng)
     # Kiểm tra option chỉ chứa 1 child ứng với 1 variant
     def validate(self, data):
-        variant = ProductVariants.objects.get(name=data['name'],product=data['product']) 
-        if not self.instance and variant is not None:
-            raise serializers.ValidationError({"variant": "Product variant is existed"})
-        option_data = data['options']
-        for i in range(0,len(option_data)):
-            for j in range(i+1,len(option_data)):
-                if option_data[i].get('product_child')==option_data[j].get('product_child'):
-                    raise serializers.ValidationError({"option": "Multi product childs must not be in a variant option"})
+        variant = ProductVariants.objects.filter(name=data['name'],product=data['product'])
+        if not self.instance and variant.count()>0:
+            raise serializers.ValidationError({
+                "variant": "Product variant is existed"
+            })
+        optionData = data['options']
+        for i in range(0,len(optionData)):
+            for j in range(i+1,len(optionData)):
+                if optionData[i].get('product_child')==optionData[j].get('product_child'):
+                    raise serializers.ValidationError({
+                        "option": "Multi product childs must not be in a variant option"
+                    })
         return data
+
     def create(self, validated_data):
-        options_data = validated_data.pop('options')  
-        variant=ProductVariants.objects.create(product_variant=variant,**validated_data)
-        for option in options_data:
+        optionsData = validated_data.pop('options')  
+        variant=ProductVariants.objects.create(**validated_data)
+        for option in optionsData:
             Options.objects.create(product_variant=variant,**option)
         return variant
 
@@ -103,40 +104,49 @@ class ProductVariantSerializer(serializers.ModelSerializer):
         instance.name = validated_data.get('name', instance.name)     
         instance.save()
         options = list((instance.options).all())
-        options_data = validated_data.pop('options') 
-        for option in options_data:        
-            option_update=options.pop(0)
-            option_update.value = option.get('value', option_update.value)
-            option_update.product_child = option.get('product_child', option_update.product_child)
-            option_update.save()
+        optionsData = validated_data.pop('options') 
+        for option in optionsData:        
+            optionUpdate=options.pop(0)
+            optionUpdate.value = option.get('value', optionUpdate.value)
+            optionUpdate.product_child = option.get('product_child', optionUpdate.product_child)
+            optionUpdate.save()
         return instance
 
 
-        
+class ProductListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields =('id','category', 'name','short_description', 'price','original_price','quantity_sold','rating_average','discount_rate')
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['img_products'] = ImgProductSerializer(instance.img_products,many=True).data
+        return response
 
 class ProductsSerializer(serializers.ModelSerializer):
-    img_products = ImgProductSerializer(many=True, required=False)
-    product_childs = ProductChildSerializer(many=True, required=False) 
-    product_variants = ProductVariantSerializer(many=True, required=False) 
     speficication = SpeficicationSerializer()
 
     class Meta:
         model = Products
-        fields = '__all__'      
-        read_only_fileds = ('category','seller', 'img_products','product_variants')
-    def create(self, validated_data):
-        speficication_data = validated_data.pop('speficication')
-        product = Products.objects.create(**validated_data)
-        Speficication.objects.create(product=product,**speficication_data)
+        fields = '__all__'     
+        extra_kwargs = {'seller': {'required': False}} 
+        create_only_fields = ('category','seller', 'img_products','product_variants')
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['img_products'] = ImgProductSerializer(instance.img_products,many=True).data
+        response['product_childs'] = ProductChildSerializer(instance.product_childs,many=True).data
+        response['product_variants'] = ProductVariantSerializer(instance.product_variants,many=True).data
+        return response
 
-        product.category.total += 1
-        product.category.save()
-        product.seller.product_count += 1
-        product.seller.save()
+    def create(self, validated_data):
+        speficicationData = validated_data.pop('speficication')
+        product = Products.objects.create(**validated_data)
+        Speficication.objects.create(product=product,**speficicationData)
+
+        
         return product
 
     def update(self, instance, validated_data):
-        speficication_pop = validated_data.pop('speficication')
+        speficicationPop = validated_data.pop('speficication')
 
         instance.category = validated_data.get('category', instance.category)
         instance.name = validated_data.get('name', instance.name)
@@ -154,16 +164,16 @@ class ProductsSerializer(serializers.ModelSerializer):
         instance.save()
 
         speficication = instance.speficication
-        speficication.brand = speficication_pop.get('brand', speficication.brand)
-        speficication.cpu_speed = speficication_pop.get('cpu_speed', speficication.cpu_speed)
-        speficication.gpu = speficication_pop.get('gpu', speficication.gpu)
-        speficication.ram = speficication_pop.get('ram', speficication.ram)
-        speficication.rom = speficication_pop.get('rom', speficication.rom)
-        speficication.screen_size = speficication_pop.get('screen_size', speficication.screen_size)
-        speficication.battery_capacity = speficication_pop.get('battery_capacity', speficication.battery_capacity)
-        speficication.weight = speficication_pop.get('weight', speficication.weight)
-        speficication.chip_set = speficication_pop.get('chip_set', speficication.chip_set)
-        speficication.material = speficication_pop.get('material', speficication.material)
+        speficication.brand = speficicationPop.get('brand', speficication.brand)
+        speficication.cpu_speed = speficicationPop.get('cpu_speed', speficication.cpu_speed)
+        speficication.gpu = speficicationPop.get('gpu', speficication.gpu)
+        speficication.ram = speficicationPop.get('ram', speficication.ram)
+        speficication.rom = speficicationPop.get('rom', speficication.rom)
+        speficication.screen_size = speficicationPop.get('screen_size', speficication.screen_size)
+        speficication.battery_capacity = speficicationPop.get('battery_capacity', speficication.battery_capacity)
+        speficication.weight = speficicationPop.get('weight', speficication.weight)
+        speficication.chip_set = speficicationPop.get('chip_set', speficication.chip_set)
+        speficication.material = speficicationPop.get('material', speficication.material)
         speficication.save()
         return instance
 
@@ -172,16 +182,6 @@ class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
         fields = '__all__'
-    def create(self, validated_data):
-        return Categories.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        instance.name = validated_data.get('name', instance.name)
-        instance.icon = validated_data.get('icon', instance.icon)
-        instance.description = validated_data.get('description', instance.description)
-        instance.total= validated_data.get('total', instance.total)
-        instance.save()
-        return instance
-
 
 class CartItemSerializer(serializers.ModelSerializer):
     class Meta:
@@ -190,24 +190,29 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['product_child'] = ProductChildSerializer(instance.product_child).data
+        response['product_child'] = {
+            "product":instance.product_child.product_id,
+            "name" : instance.product_child.name,
+            "price" : instance.product_child.price,
+            "thumbnail_url":instance.product_child.thumbnail_url,
+        }
         return response
-    def cal_total_price(self, quantity, product_child):
-        total_price = product_child.price*quantity
-        return total_price
+    def CalTotalPrice(self, quantity, product_child):
+        totalPrice = product_child.price*quantity
+        return totalPrice
     def create(self, validated_data):
-        price = self.cal_total_price(validated_data.get('quantity'), validated_data.get('product_child'))
-        cart_item = CartItem.objects.create(
-            user_profile=validated_data.get('user_profile'),
+        price = self.CalTotalPrice(validated_data.get('quantity'), validated_data.get('product_child'))
+        cartItem = CartItem.objects.create(
+            user=validated_data.get('user'),
             product_child=validated_data.get('product_child'),
             quantity=validated_data.get('quantity'),
             total_price=price,
         )
-        return cart_item
+        return cartItem
 
     def update(self, instance, validated_data):
         instance.quantity = validated_data.get('quantity', instance.quantity)
-        price = self.cal_total_price(instance.quantity, instance.product_child)
+        price = self.CalTotalPrice(instance.quantity, instance.product_child)
         instance.total_price = validated_data.get('price', price)
         instance.save()
         return instance
@@ -216,16 +221,6 @@ class InteractiveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interactive
         fields = '__all__'
-    def create(self, validated_data):
-        return Interactive.objects.create(**validated_data)
-    def update(self, instance, validated_data):
-        instance.favorite = validated_data.get('favorite', instance.favorite)
-        instance.comment = validated_data.get('comment', instance.comment)
-        instance.link = validated_data.get('link', instance.link)
-        instance.rating = validated_data.get('rating', instance.rating)
-        instance.time_interactive = datetime.now()
-        instance.save()
-        return instance
     
 
 

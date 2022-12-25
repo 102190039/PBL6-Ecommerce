@@ -22,6 +22,11 @@ def CheckGroupOfUser(user):
 
 GROUPS = ['ADMIN', 'STAFF','USER','SELLER']
 
+def AddGroup():
+    admin_group = Group.objects.get_or_create(name="ADMIN")      
+    staff_group = Group.objects.get_or_create(name="STAFF")
+    user_group = Group.objects.get_or_create(name="USER")
+    sup_group = Group.objects.get_or_create(name="SELLER")
 
 
 class IsAdmin(permissions.BasePermission):
@@ -36,6 +41,6 @@ class IsUser(permissions.BasePermission):
     def has_permission(self, request, view):
         return bool(IsInGroup(request.user,"USER") and request.user.is_authenticated)
 
-class IsSupplier(permissions.BasePermission):
+class IsSeller(permissions.BasePermission):
     def has_permission(self, request, view):
-        return bool(IsInGroup(request.user,"SUPPLIER") and request.user.is_authenticated)
+        return bool(IsInGroup(request.user,"SELLER") and request.user.is_authenticated)

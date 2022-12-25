@@ -1,0 +1,747 @@
+[
+    {
+        "username": "DinhNVT",
+        "password": "PBL6TechE",
+        "email": "huudinhnguyen001k@gmail.com",
+        "first_name": "Dinh",
+        "last_name": "Nguyễn",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "2001-12-22",
+            "phone": "0981418020",
+            "address": "96 Âu Cơ, Liên Chiểu, Đà Nẵng",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "account_no":"huudinh001@personal.example.com"
+          }
+    }, 
+    {
+        "username": "Sen@2001",
+        "password": "PBL6TechE",
+        "email": "ledinhsan2001@gmail.com",
+        "first_name": "San",
+        "last_name": "Đình",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "2001-05-31",
+            "phone": "0326687233",
+            "address": "98 Nguyễn Lương Bằng, Liên Chiểu, Đà Nẵng",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "account_no":"dinhsan001@personal.example.com"
+          }
+    },
+    {
+        "username": "danhthai@0311",
+        "password": "PBL6TechE",
+        "email": "danhthai5343@gmail.com",
+        "first_name": "Thái",
+        "last_name": "Danh",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "2001-11-03",
+            "phone": "0334095343",
+            "address": "34 Âu Cơ, Liên Chiểu, Đà Nẵng",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "account_no":"nguyenhieu001@personal.example.com"
+          }
+    },
+    {
+        "username": "nguyenhieu@2k1",
+        "password": "PBL6TechE",
+        "email": "hieun614@gmail.com",
+        "first_name": "Hiếu",
+        "last_name": "Trung",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": null,
+            "phone": "0343977352",
+            "address": "Liên Chiểu, Đà Nẵng",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "account_no":"danhthai001@personal.example.com"
+          }
+    },
+
+    {
+        "username": "sreisk0",
+        "password": "PBL6TechE",
+        "email": "sreisk0@house.gov",
+        "first_name": "Sullivan",
+        "last_name": "Reisk",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1991-11-25",
+            "phone": "2585667267",
+            "address": "327 Luster Court",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "barnowicz1",
+        "password": "PBL6TechE",
+        "email": "barnowicz1@omniture.com",
+        "first_name": "Blaine",
+        "last_name": "Arnowicz",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1991-11-25",
+            "phone": "2585667267",
+            "address": "327 Luster Court",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "epee2",
+        "password": "PBL6TechE",
+        "email": "epee2@1und1.de",
+        "first_name": "Elana",
+        "last_name": "Pee",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1991-11-25",
+            "phone": "2585667267",
+            "address": "327 Luster Court",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "ieamer3",
+        "password": "PBL6TechE",
+        "email": "ieamer3@ow.ly",
+        "first_name": "Inger",
+        "last_name": "Eamer",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1991-11-25",
+            "phone": "2585667267",
+            "address": "327 Luster Court",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "wjuppe4",
+        "password": "PBL6TechE",
+        "email": "wjuppe4@techcrunch.com",
+        "first_name": "Wyatt",
+        "last_name": "Juppe",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1991-11-25",
+            "phone": "2585667267",
+            "address": "327 Luster Court",
+            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "gcooksey5",
+        "password": "PBL6TechE",
+        "email": "gcooksey5@bizjournals.com",
+        "first_name": "Gannon",
+        "last_name": "Cooksey",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "2000-09-28",
+            "phone": "8355291353",
+            "address": "8476 Almo Terrace",
+            "avt": "https://robohash.org/eumaliquampossimus.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "dbaison6",
+        "password": "PBL6TechE",
+        "email": "dbaison6@techcrunch.com",
+        "first_name": "Doroteya",
+        "last_name": "Baison",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "1998-04-09",
+            "phone": "3124865387",
+            "address": "2294 Lindbergh Court",
+            "avt": "https://robohash.org/repudiandaeprovidentaccusamus.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "nscreach7",
+        "password": "PBL6TechE",
+        "email": "nscreach7@time.com",
+        "first_name": "Novelia",
+        "last_name": "Screach",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1999-01-03",
+            "phone": "7732973752",
+            "address": "05 Hoepker Junction",
+            "avt": "https://robohash.org/estcommodieligendi.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "kdilloway8",
+        "password": "PBL6TechE",
+        "email": "kdilloway8@soup.io",
+        "first_name": "Kristine",
+        "last_name": "Dilloway",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "1999-05-09",
+            "phone": "9265945858",
+            "address": "1544 Lien Crossing",
+            "avt": "https://robohash.org/voluptatumquiex.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "gpledger9",
+        "password": "PBL6TechE",
+        "email": "gpledger9@storify.com",
+        "first_name": "Gardiner",
+        "last_name": "Pledger",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "1993-05-07",
+            "phone": "7435077108",
+            "address": "9 Warbler Terrace",
+            "avt": "https://robohash.org/accusantiumrerumitaque.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "rkinnena",
+        "password": "PBL6TechE",
+        "email": "rkinnena@jalbum.net",
+        "first_name": "Rodrique",
+        "last_name": "Kinnen",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "1997-12-09",
+            "phone": "1735943988",
+            "address": "02911 Welch Park",
+            "avt": "https://robohash.org/nequeeased.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "dshilburneb",
+        "password": "PBL6TechE",
+        "email": "dshilburneb@discuz.net",
+        "first_name": "Delia",
+        "last_name": "Shilburne",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1995-05-05",
+            "phone": "7785669716",
+            "address": "27 Northland Way",
+            "avt": "https://robohash.org/sedaperiamadipisci.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "rdowsingc",
+        "password": "PBL6TechE",
+        "email": "rdowsingc@photobucket.com",
+        "first_name": "Ray",
+        "last_name": "Dowsing",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "2005-03-08",
+            "phone": "4266946932",
+            "address": "36 Kings Center",
+            "avt": "https://robohash.org/dolordoloremquedeleniti.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "hstitfalld",
+        "password": "PBL6TechE",
+        "email": "hstitfalld@privacy.gov.au",
+        "first_name": "Hallsy",
+        "last_name": "Stitfall",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "2000-05-30",
+            "phone": "3187478867",
+            "address": "6 Del Sol Way",
+            "avt": "https://robohash.org/quisitet.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "oallebonee",
+        "password": "PBL6TechE",
+        "email": "oallebonee@instagram.com",
+        "first_name": "Oran",
+        "last_name": "Allebone",
+        "userprofile": {
+            "is_seller": false,
+            "gender": true,
+            "birthday": "1995-01-30",
+            "phone": "2008846900",
+            "address": "50009 Kenwood Terrace",
+            "avt": "https://robohash.org/voluptassolutaneque.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "lpictonf",
+        "password": "PBL6TechE",
+        "email": "lpictonf@rakuten.co.jp",
+        "first_name": "Lucila",
+        "last_name": "Picton",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "2003-05-23",
+            "phone": "4694021597",
+            "address": "64 Sauthoff Junction",
+            "avt": "https://robohash.org/corporisdictaaut.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "sdundridgeg",
+        "password": "PBL6TechE",
+        "email": "sdundridgeg@booking.com",
+        "first_name": "Starlin",
+        "last_name": "Dundridge",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "1991-01-25",
+            "phone": "2109953453",
+            "address": "8 Crownhardt Terrace",
+            "avt": "https://robohash.org/commodirecusandaeautem.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "tdoveyh",
+        "password": "PBL6TechE",
+        "email": "tdoveyh@irs.gov",
+        "first_name": "Thornton",
+        "last_name": "Dovey",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "2005-04-17",
+            "phone": "5541006721",
+            "address": "727 Vernon Place",
+            "avt": "https://robohash.org/estnisipossimus.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "klutyi",
+        "password": "PBL6TechE",
+        "email": "klutyi@state.tx.us",
+        "first_name": "Kelly",
+        "last_name": "Luty",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "2004-07-27",
+            "phone": "7786260065",
+            "address": "8 Ilene Place",
+            "avt": "https://robohash.org/repudiandaefacereipsum.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "mwrathmallj",
+        "password": "PBL6TechE",
+        "email": "mwrathmallj@dmoz.org",
+        "first_name": "Matti",
+        "last_name": "Wrathmall",
+        "userprofile": {
+            "is_seller": false,
+            "gender": false,
+            "birthday": "1999-12-20",
+            "phone": "1372766606",
+            "address": "90 Veith Place",
+            "avt": "https://robohash.org/impeditreprehenderitveritatis.png?size=100x100&set=set1"
+          }
+    }, 
+    {
+        "username": "hdelaeglisek",
+        "password": "PBL6TechE",
+        "email": "hdelaeglisek@w3.org",
+        "first_name": "Haze",
+        "last_name": "De la Eglise",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "1994-02-28",
+            "phone": "2839075900",
+            "address": "0 South Way",
+            "avt": "https://robohash.org/eteaqueeos.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Lesch-Bauch",
+                "logo": "https://robohash.org/etquiimpedit.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "lshipleyl",
+        "password": "PBL6TechE",
+        "email": "lshipleyl@nasa.gov",
+        "first_name": "Lisha",
+        "last_name": "Shipley",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "2002-06-14",
+            "phone": "7776862980",
+            "address": "838 Vernon Center",
+            "avt": "https://robohash.org/sapientequiain.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Hessel LLC",
+                "logo": "https://robohash.org/esseexcepturiut.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "kbaignardm",
+        "password": "PBL6TechE",
+        "email": "kbaignardm@e-recht24.de",
+        "first_name": "Kira",
+        "last_name": "Baignard",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "1999-02-01",
+            "phone": "9347347611",
+            "address": "37207 Hooker Way",
+            "avt": "https://robohash.org/sedminusmollitia.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Corkery, Altenwerth and Cruickshank",
+                "logo": "https://robohash.org/enimvelitdoloremque.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "gmeadowsn",
+        "password": "PBL6TechE",
+        "email": "gmeadowsn@ucoz.com",
+        "first_name": "Glori",
+        "last_name": "Meadows",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "2000-02-17",
+            "phone": "9472876449",
+            "address": "54920 Golden Leaf Parkway",
+            "avt": "https://robohash.org/hicvoluptatibussaepe.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Dibbert LLC",
+                "logo": "https://robohash.org/quiasequiest.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "hgyeneso",
+        "password": "PBL6TechE",
+        "email": "hgyeneso@baidu.com",
+        "first_name": "Haily",
+        "last_name": "Gyenes",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "1998-03-16",
+            "phone": "3984075463",
+            "address": "446 Dorton Street",
+            "avt": "https://robohash.org/doloremmagniofficiis.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Hilpert and Sons",
+                "logo": "https://robohash.org/atvitaeomnis.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "edeasp",
+        "password": "PBL6TechE",
+        "email": "edeasp@feedburner.com",
+        "first_name": "Erhard",
+        "last_name": "Deas",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "1998-12-06",
+            "phone": "4221720438",
+            "address": "64 Algoma Terrace",
+            "avt": "https://robohash.org/eligendiverofacilis.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Dooley Inc",
+                "logo": "https://robohash.org/debitisetnihil.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "bstarrq",
+        "password": "PBL6TechE",
+        "email": "bstarrq@booking.com",
+        "first_name": "Blithe",
+        "last_name": "Starr",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "1997-12-08",
+            "phone": "4485613529",
+            "address": "6985 Fisk Court",
+            "avt": "https://robohash.org/etsedunde.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Armstrong-Bashirian",
+                "logo": "https://robohash.org/utvoluptatemexercitationem.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "acradockr",
+        "password": "PBL6TechE",
+        "email": "acradockr@delicious.com",
+        "first_name": "Angelica",
+        "last_name": "Cradock",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "2001-05-30",
+            "phone": "9776740342",
+            "address": "115 Victoria Crossing",
+            "avt": "https://robohash.org/culpaestut.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Beer and Sons",
+                "logo": "https://robohash.org/quaeratvoluptatemut.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "ayudes",
+        "password": "PBL6TechE",
+        "email": "ayudes@weather.com",
+        "first_name": "Ardyth",
+        "last_name": "Yude",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "2003-10-21",
+            "phone": "3089675331",
+            "address": "70 Kenwood Hill",
+            "avt": "https://robohash.org/velitsedvoluptas.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Abbott LLC",
+                "logo": "https://robohash.org/estvoluptassunt.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "sstrutherst",
+        "password": "PBL6TechE",
+        "email": "sstrutherst@npr.org",
+        "first_name": "Scot",
+        "last_name": "Struthers",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "1997-12-14",
+            "phone": "6188284503",
+            "address": "19577 Luster Alley",
+            "avt": "https://robohash.org/accusantiumquiadolorem.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Kessler-Armstrong",
+                "logo": "https://robohash.org/dolorestemporibusfuga.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "bshapirau",
+        "password": "PBL6TechE",
+        "email": "bshapirau@nih.gov",
+        "first_name": "Bobbie",
+        "last_name": "Shapira",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "2005-09-26",
+            "phone": "7933114684",
+            "address": "51 International Pass",
+            "avt": "https://robohash.org/inautaut.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Muller-VonRueden",
+                "logo": "https://robohash.org/providentofficiaeaque.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "kingv",
+        "password": "PBL6TechE",
+        "email": "kingv@yelp.com",
+        "first_name": "Kinna",
+        "last_name": "Ing",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "1995-12-29",
+            "phone": "3575322127",
+            "address": "0548 Caliangt Avenue",
+            "avt": "https://robohash.org/iustocupiditatevelit.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Feil, Koepp and Waelchi",
+                "logo": "https://robohash.org/fugamagnamsit.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "shedmanw",
+        "password": "PBL6TechE",
+        "email": "shedmanw@macromedia.com",
+        "first_name": "Siffre",
+        "last_name": "Hedman",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "2002-09-07",
+            "phone": "7306168545",
+            "address": "184 Shelley Trail",
+            "avt": "https://robohash.org/pariaturdoloremasperiores.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Macejkovic, Heaney and Lakin",
+                "logo": "https://robohash.org/autemrerumconsectetur.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "hmcbeathx",
+        "password": "PBL6TechE",
+        "email": "hmcbeathx@seattletimes.com",
+        "first_name": "Helenka",
+        "last_name": "McBeath",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "1991-05-05",
+            "phone": "8858917887",
+            "address": "4585 Buhler Center",
+            "avt": "https://robohash.org/esseiurevelit.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "O'Keefe-Koelpin",
+                "logo": "https://robohash.org/ipsumsitratione.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "aebbitty",
+        "password": "PBL6TechE",
+        "email": "aebbitty@pcworld.com",
+        "first_name": "Alfi",
+        "last_name": "Ebbitt",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "2001-05-09",
+            "phone": "6681641712",
+            "address": "9283 Schiller Crossing",
+            "avt": "https://robohash.org/etarchitectovoluptatem.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Parker, Littel and Murphy",
+                "logo": "https://robohash.org/eumnecessitatibusexplicabo.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "sgrininz",
+        "password": "PBL6TechE",
+        "email": "sgrininz@wunderground.com",
+        "first_name": "Savina",
+        "last_name": "Grinin",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "1998-08-20",
+            "phone": "4548581469",
+            "address": "959 Elka Street",
+            "avt": "https://robohash.org/fugiatasperioresest.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Hagenes LLC",
+                "logo": "https://robohash.org/teneturvelnemo.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "clegg10",
+        "password": "PBL6TechE",
+        "email": "clegg10@theatlantic.com",
+        "first_name": "Conway",
+        "last_name": "Legg",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "1999-10-25",
+            "phone": "9648283880",
+            "address": "8976 Forster Terrace",
+            "avt": "https://robohash.org/nostrumconsequaturaut.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Ryan, Pagac and Hyatt",
+                "logo": "https://robohash.org/modinatusest.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "smelley11",
+        "password": "PBL6TechE",
+        "email": "smelley11@irs.gov",
+        "first_name": "Silvio",
+        "last_name": "Melley",
+        "userprofile": {
+            "is_seller": true,
+            "gender": true,
+            "birthday": "2005-09-27",
+            "phone": "6408050519",
+            "address": "15821 Kim Alley",
+            "avt": "https://robohash.org/inmaioresoptio.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Olson and Sons",
+                "logo": "https://robohash.org/autetest.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "wstrephan12",
+        "password": "PBL6TechE",
+        "email": "wstrephan12@webeden.co.uk",
+        "first_name": "Wildon",
+        "last_name": "Strephan",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "2001-10-06",
+            "phone": "4246861958",
+            "address": "4954 Dryden Point",
+            "avt": "https://robohash.org/earumeligendiiste.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Bailey-Block",
+                "logo": "https://robohash.org/consequunturautrepellat.png?size=100x100&set=set1"
+              }
+          }
+    }, 
+    {
+        "username": "ashawcroft13",
+        "password": "PBL6TechE",
+        "email": "ashawcroft13@merriam-webster.com",
+        "first_name": "Auberon",
+        "last_name": "Shawcroft",
+        "userprofile": {
+            "is_seller": true,
+            "gender": false,
+            "birthday": "1993-04-29",
+            "phone": "3641391572",
+            "address": "70057 Colorado Street",
+            "avt": "https://robohash.org/nonrepudiandaeplaceat.png?size=100x100&set=set1",
+            "seller": {
+                "name_store": "Little, Nitzsche and Mertz",
+                "logo": "https://robohash.org/ipsamexnostrum.png?size=100x100&set=set1"
+              }
+          }
+    }
+]
