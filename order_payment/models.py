@@ -1,12 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import User
 from authenticate.models import Seller, UserProfile
-from tech_ecommerce.models import ProductChilds
+from tech_ecommerce.models import ProductChilds, Products
 from django.db.models.signals import pre_delete,post_save
 from django.dispatch import receiver
 
 # Create your models here.
 class Order(models.Model):
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='order')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='order')
     total_price = models.FloatField(default=0, blank=True)
     order_count = models.IntegerField(default=0, blank=True)
 
@@ -14,17 +15,20 @@ class Order(models.Model):
 class OrderDetail(models.Model):
     product_child = models.ForeignKey(ProductChilds, on_delete=models.CASCADE, related_name='order_detail')
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_details')
-    seller = models.ForeignKey(Seller, on_delete=models.CASCADE,related_name='order_details')
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE,related_name='order_detail')
     quantity = models.IntegerField(default=0, blank=True)
     price = models.FloatField(default=0, blank=True)
     total_price = models.FloatField(default=0, blank=True)
     discount = models.FloatField(default=0, blank=True)
 
 @receiver(post_save, sender=OrderDetail)
-def save_order(sender,instance, **kwargs):
+def save_order_detail(sender,instance, **kwargs):
     product = instance.product_child.product
     product.quantity_sold += instance.quantity
     product.save()
+    order = instance.order
+    order.total_price+= instance.total_price
+    order.save()
     
 
 
@@ -56,6 +60,6 @@ class PurchasedProduct(models.Model):
     ('delivering', 'delivering'),
     ('delivered', 'delivered'),
     ('canceled', 'canceled')]
-    user= models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='purchased_products')
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='purchased_product')
+    user= models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchased_products')
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='purchased_products')
     status_purchase= models.CharField(max_length=20, choices = STATUS_PURCHASE, default='delivering')

@@ -11,7 +11,7 @@
             "birthday": "2001-12-22",
             "phone": "0981418020",
             "address": "96 Âu Cơ, Liên Chiểu, Đà Nẵng",
-            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "avt": null,
             "account_no":"huudinh001@personal.example.com"
           }
     }, 
@@ -27,7 +27,7 @@
             "birthday": "2001-05-31",
             "phone": "0326687233",
             "address": "98 Nguyễn Lương Bằng, Liên Chiểu, Đà Nẵng",
-            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "avt": null,
             "account_no":"dinhsan001@personal.example.com"
           }
     },
@@ -43,7 +43,7 @@
             "birthday": "2001-11-03",
             "phone": "0334095343",
             "address": "34 Âu Cơ, Liên Chiểu, Đà Nẵng",
-            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "avt": null,
             "account_no":"nguyenhieu001@personal.example.com"
           }
     },
@@ -59,7 +59,7 @@
             "birthday": null,
             "phone": "0343977352",
             "address": "Liên Chiểu, Đà Nẵng",
-            "avt": "https://robohash.org/estanimiadipisci.png?size=100x100&set=set1",
+            "avt": null,
             "account_no":"danhthai001@personal.example.com"
           }
     },

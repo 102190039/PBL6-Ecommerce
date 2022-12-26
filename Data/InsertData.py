@@ -60,8 +60,9 @@ class InsertData():
             phone =user_profile['phone'],
             address=user_profile['address'],
         )
-        name,response = ConvertURLToImage(user_profile['avt'])
-        user_profile_new.avt.save(name, ContentFile(response.content), save=True)
+        if user_profile['avt'] is not None:
+            name,response = ConvertURLToImage(user_profile['avt'])
+            user_profile_new.avt.save(name, ContentFile(response.content), save=True)
 
         if user_profile['is_seller']:
             seller = user_profile['seller']
@@ -87,7 +88,7 @@ class InsertData():
     for idx in range(0,len(products_data)):
         if idx % 7 == 0:
             id_seller += 1
-        print(idx)
+        print("product -> ",idx)
         product = products_data[idx]
         product_new = Products.objects.create(
             seller=list_seller[id_seller],
@@ -128,7 +129,9 @@ class InsertData():
                 inventory_status = child['inventory_status'],
                 selected = child['selected'],
                 thumbnail_url = child['thumbnail_url'],
-                name_url = f"product_{product_new.pk}_child_{count}"                
+                name_url = f"product_{product_new.pk}_child_{count}",
+                option1=child['option1'],
+                option2=child['option2']              
             )
             count+=1
             option= dict()
@@ -161,7 +164,6 @@ class InsertData():
             count+=1
 
         count = 0
-        print(len(interactives[idx]))
         for interactive in interactives[idx]:
             Interactive.objects.create(
                 product_id=interactive['product_id']+1,
@@ -172,3 +174,4 @@ class InsertData():
                 rating=int(interactive['rating']), 
                 time_interactive=interactive['time_interactive'],)
             count+=1
+        

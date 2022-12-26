@@ -53,8 +53,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         profile = validated_data.pop('user_profile')
-        user = User.objects.create_user(**validated_data)
+        user = User(**validated_data)
         user.set_password(validated_data['password'])
+        user.is_active= False
+        user.save()
         UserProfile.objects.create(user=user,**profile)
         user_group = Group.objects.get(name="USER")
         user.groups.add(user_group)
@@ -122,6 +124,7 @@ class SellerSerializer(serializers.ModelSerializer):
         fields = '__all__'
         extra_kwargs ={"user":{'required':False}}
         write_once_fields = ["user"]
+        read_only_fields = ['product_count','follower_count','rating_average']
 
     def get_photo_url(self, obj):
         request = self.context.get('request')
@@ -137,22 +140,12 @@ class SellerSerializer(serializers.ModelSerializer):
 
         userGroup = Group.objects.get(name="SELLER")
         user.groups.add(userGroup)
-        profile = UserProfile.objects.get(user_id=userProfile)
+        profile = seller.user
         profile.is_seller = True
         profile.save()
         return seller
 
     def update(self, instance, validated_data):
-        # instance.modified_at = datetime.now()
-        # instance.account_no = validated_data.get('account_no',instance.account_no)
-        # instance.name_store = validated_data.get('name_store',instance.name_store)
-        # instance.facebook = validated_data.get('facebook',instance.facebook)
-        # instance.product_count = validated_data.get('product_count',instance.product_count)
-        # instance.follower_count = validated_data.get('follower_count',instance.follower_count)
-        # instance.rating_average = validated_data.get('rating_average',instance.rating_average)
-        # instance.response_rate = validated_data.get('response_rate',instance.response_rate)
-        # instance.logo = validated_data.get('logo',instance.logo)
-        # instance.save()
         PayOut = instance.pay_out
         PayOut.account = instance.account_no
         PayOut.save()

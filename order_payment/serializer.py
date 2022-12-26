@@ -40,7 +40,7 @@ class OrderSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         cartItems = validated_data.pop('cart_item_id')
         numberOrder = int(len(cartItems))
-        order = Order(
+        order = Order.objects.create(
             user = validated_data.get('user'),
             total_price = 0,
             order_count = numberOrder,
@@ -52,18 +52,18 @@ class OrderSerializer(serializers.ModelSerializer):
             child = ProductChilds.objects.get(pk=item.product_child_id)
             # get seller from child
             sellerId = child.seller_id
-            seller = Seller.objects.get(pk=sellerId)
+            # seller = Seller.objects.get(pk=sellerId)
             OrderDetail.objects.create(
                 product_child = child, 
                 order = order,
-                seller = seller,
+                seller_id = sellerId,
                 quantity =  item.quantity,
                 total_price =  item.total_price,
             )
-            subPrice += item.total_price
-            item.delete()
-        order.total_price = subPrice
-        order.save()
+        #     subPrice += item.total_price
+            # item.delete()
+        # order.total_price = subPrice
+        # order.save()
         return order
 
 # ------------------------ Payment ------------------------

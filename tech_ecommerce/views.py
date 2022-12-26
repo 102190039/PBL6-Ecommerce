@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from authenticate import group_permission
+from order_payment.models import PurchasedProduct
 from tech_ecommerce.filters import ProductFilter
 from tech_ecommerce.models import ( Interactive, 
                                     CartItem, 
@@ -771,7 +772,7 @@ class ProductListView(viewsets.ModelViewSet):
 
 class CartItemViewSet(viewsets.ViewSet):
     def get_permissions(self):
-        if self.action in ['list', 'create', 'update', 'destroy']:
+        if self.action in ['list', 'create', 'update', 'destroy','delete_carts']:
             return [IsAuthenticated()]
         return super().get_permissions()
 
@@ -793,50 +794,26 @@ class CartItemViewSet(viewsets.ViewSet):
         data = request.data
         user = self.request.user.id
         if user == int(data['user']):
-            objVariants = data['variants']
-            objProductId = data['product_id']
-            objQuantity = data['quantity']
+            variants = data['variants']
+            quantity = data['quantity']
+            cartItems = CartItem.objects.filter(user_id=user)
+            childs = ProductChilds.objects.filter(product=data['product_id'])
+            childs_option1 = childs.filter(option1 =variants[0]['value'])
+            try:          
+                child = childs_option1.get(option2=variants[1]['value'])
+                # else:
+                #     child = childs_option1[0]
 
-            # id product => id variants
-            variants = ProductVariants.objects.filter(product_id=objProductId)
-            # id variant => value option
-            arrProductChilds = []
-            option = Options.objects.all()
-            for idx in range(0, len(variants)):
-                options = option.filter(
-                    product_variant_id=variants[idx].id,
-                    value=objVariants[idx]['value']
-                )
-                if options.exists():
-                    arrProductChilds.append(options)
-            # if exist value Dung Lượng => len = 2
-            if len(arrProductChilds) > 1:
-                listProductChild = arrProductChilds[0].union(
-                    arrProductChilds[1], all=True)
-            # else don't exist value Dung Lượng => len = 1
-            else:
-                listProductChild = arrProductChilds[0]
-            listChildId = []
-            for productChild in listProductChild:
-                listChildId.append(productChild.product_child_id)
-            # tim id_child_Mau == id_child_DungLuong
-            # K exist Dung Luong => id_Child_Mau
-            childId = listChildId[0]
-            for i in range(0, len(listChildId)):
-                for j in range(i+1, len(listChildId)):
-                    if listChildId[i] == listChildId[j]:
-                        childId = listChildId[i]
-                        break
-
-            userProfile = data['user']
-            cartItems = CartItem.objects.filter(user_id=userProfile)
+            except:
+                child = childs_option1[0]
+                
             try:
                 # if product child exists
-                cartExist = cartItems.get(product_child_id=childId)
+                cartExist = cartItems.get(product_child=child)
                 data = {
-                    'user': [userProfile],
-                    'product_child': [childId],
-                    'quantity': [objQuantity+cartExist.quantity]
+                    'user': [user],
+                    'product_child': [child.pk],
+                    'quantity': [quantity+cartExist.quantity]
                 }
                 qdict = QueryDict('', mutable=True)
                 qdict.update(MultiValueDict(data))
@@ -854,9 +831,9 @@ class CartItemViewSet(viewsets.ViewSet):
             except:
                 # else product child chưa exists
                 data = {
-                    'user': [userProfile],
-                    'product_child': [childId],
-                    'quantity': [objQuantity]
+                    'user': [user],
+                    'product_child': [child.pk],
+                    'quantity': [quantity]
                 }
                 qdict = QueryDict('', mutable=True)
                 qdict.update(MultiValueDict(data))
@@ -900,6 +877,24 @@ class CartItemViewSet(viewsets.ViewSet):
                 "ERROR": f" {e}!"
             }, status=status.HTTP_403_FORBIDDEN)
 
+    @action(methods=['POST'], detail=False, permission_classes=[IsAuthenticated], url_path="delete")
+    def delete_carts(self,request):
+        try:
+            carts = request.data['carts']
+            for cartId in carts:
+                item = CartItem.objects.filter(pk=cartId)             
+                item.delete()
+
+            return Response({
+                'message': 'Delete product out Cart Item is Success!',
+            }, status=status.HTTP_200_OK)
+
+               
+        except Exception as e:
+            traceback.print_exc()
+            return Response({
+                "ERROR": f" {e}!"
+            }, status=status.HTTP_403_FORBIDDEN)
     def destroy(self, request, pk=None):
         try:
             item = CartItem.objects.get(pk=pk)
@@ -907,7 +902,7 @@ class CartItemViewSet(viewsets.ViewSet):
                 item.delete()
                 return Response({
                     'message': 'Delete product out Cart Item is Success!',
-                }, status=status.HTTP_204_NO_CONTENT)
+                }, status=status.HTTP_200_OK)
 
             return Response({
                 'ERROR': item.errors
@@ -933,30 +928,37 @@ class InteractiveViewSet(viewsets.ViewSet):
         data = request.data
         userId= self.request.user.id
         try:
-            Interactive.objects.get(user_id=userId)
-            if 'link' in request.FILES:
-                file = request.FILES['link']
-                default_storage.save("pictures/products/"+file.name, file)
-                storage.child("comment_image/" +file.name).put("pictures/products/"+file.name)
-                default_storage.delete("pictures/products/"+file.name)
-                url = storage.child("comment_image/" + file.name).get_url(None)
-                data['link'] = url
-            serializer = InteractiveSerializer(data=data)
-            if not serializer.is_valid():
-                return Response({
-                    'ERROR': serializer.errors,
-                }, status=status.HTTP_400_BAD_REQUEST)
-
-            serializer.save()
+            Interactive.objects.get(user_id=userId, product =data['product'])
             return Response({
-                'message': "Evaluate product is Success!",
-                'data': serializer.data
-            }, status=status.HTTP_201_CREATED)
-        except Exception as e:
-            traceback.print_exc()
-            return Response({
-                "ERROR": f" {e}!"
+                "ERROR": "Not allowed to evaluated!"
             }, status=status.HTTP_403_FORBIDDEN)
+        except:
+            try :
+                # child = ProductChilds.objects.get(product=data['product'])
+                PurchasedProduct.objects.get(user_id=userId,product_id =data['product'])           
+                if 'link' in request.FILES:
+                    file = request.FILES['link']
+                    default_storage.save("pictures/products/"+file.name, file)
+                    storage.child("comment_image/" +file.name).put("pictures/products/"+file.name)
+                    default_storage.delete("pictures/products/"+file.name)
+                    url = storage.child("comment_image/" + file.name).get_url(None)
+                    data['link'] = url
+                serializer = InteractiveSerializer(data=data)
+                if not serializer.is_valid():
+                    return Response({
+                        'ERROR': serializer.errors,
+                    }, status=status.HTTP_400_BAD_REQUEST)
+
+                serializer.save()
+                return Response({
+                    'message': "Evaluate product is Success!",
+                    'data': serializer.data
+                }, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                traceback.print_exc()
+                return Response({
+                    "ERROR": f"Not allowed to evaluate product! {e}"
+                }, status=status.HTTP_403_FORBIDDEN)
 
 
 listFilters = [

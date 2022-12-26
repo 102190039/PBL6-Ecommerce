@@ -2,7 +2,7 @@
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
 from rest_framework.routers import DefaultRouter
-from authenticate.views import  AdminView, GroupAndPermissionView, LoginView, Logout, PasswordView, RoleView, SellerView,  UserView
+from authenticate.views import  AdminView, ComfirmAccount, GroupAndPermissionView, LoginView, Logout, PasswordView, RoleView, SellerView,  UserView
 
 
 # app_name="authenticate"
@@ -17,6 +17,7 @@ urlpatterns = [
     path('password/',PasswordView.as_view(), name='password'),
 
     path('register/',UserView.as_view({'post': 'create'}), name='register'),
+    path('register/comfirm/',ComfirmAccount.as_view(), name='comfirm_account'),
     path('profile/<int:pk>/',UserView.as_view({'get': 'retrieve','put':'update'}), name='profile'),
     path('profile/<int:pk>/upload-avt/',UserView.as_view({'put':'update_image'}), name='profile-avt'),
 

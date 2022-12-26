@@ -133,7 +133,7 @@ class PayPal():
         return token.json()['access_token']
 
     # Create a order to Paypal
-    def CreateOrder(self,pay_in_id,money): 
+    def CreateOrder(self,pay_in_id,money,user_id): 
         token = self.GetToken()
         headers = {
             'Content-Type': 'application/json',
@@ -143,7 +143,7 @@ class PayPal():
             "intent": "CAPTURE",
             "application_context": {
                 # Return url when checkout successful
-                "return_url": f"http://127.0.0.1:8000/tech/checkout-paypal/{pay_in_id}/succeeded/",
+                "return_url": f"http://127.0.0.1:8000/tech/checkout-paypal/{pay_in_id}/succeeded/?user_id={user_id}",
                 "cancel_url": f"http://127.0.0.1:8000/tech/checkout-paypal/{pay_in_id}/failed/", 
                 "brand_name": "PBL6 Tech E",
                 "shipping_preference": "NO_SHIPPING",
@@ -205,10 +205,12 @@ class PayPal():
         return response
         
 
-def TransferMoneys(order):
+def TransferMoneys(userId,order):
     listOrderDetails = OrderDetail.objects.filter(order=order)
     # Get list of order details to transfer money for seller
     for orderDetail in listOrderDetails:
+        # add bought products
+        PurchasedProduct.objects.create(user_id=userId,product_id = orderDetail.product_child.product_id)
         payOut = PayOut.objects.get(seller=orderDetail.seller)
         payOut.current_balance += orderDetail.total_price * 0.1        
         payOut.save()
@@ -230,6 +232,7 @@ class PayPalView(ViewSet):
             # Post Paypal API to capture customer checkout
             Authtoken = PayPal().GetToken()
             orderId = request.query_params['token']
+            userId=request.query_params['user_id']
             captureurl = f'https://api.sandbox.paypal.com/v2/checkout/orders/{orderId}/capture'#see transaction status
             headers = {
                 "Content-Type": "application/json",
@@ -239,13 +242,13 @@ class PayPalView(ViewSet):
                 pay_in= payIn,
                 money= payIn.number_money,
                 )
+            # transfer money for seller
+            TransferMoneys(userId,payIn.order_id)
             # Update status payment -> Payment successful
             payIn.status_payment =True
             payIn.received_time = date.today()
             payIn.save()
             
-            # transfer money for seller
-            TransferMoneys(payIn.order)
             return Response({
                 'message':'Payment successful'
             }, status=status.HTTP_200_OK)
@@ -340,14 +343,13 @@ class PayInViewSet(ViewSet):
                     'ERROR': serializer.errors,
                 },status=status.HTTP_400_BAD_REQUEST)       
             serializer.save()
-            # add bought products
-            PurchasedProduct.objects.create(user_id=userId,order=order)
+            
 
             if data['type_payment']=="online":
                 pay_in_id= int(serializer.data['id'])
                 money= float(serializer.data['number_money']) 
 
-                linkForPayment=PayPal().CreateOrder(pay_in_id, money)   
+                linkForPayment=PayPal().CreateOrder(pay_in_id, money,userId)   
                 if linkForPayment=="ERROR":  
                     return Response({'ERROR'}, status=status.HTTP_400_BAD_REQUEST)
                 return Response({'link_payment': linkForPayment}, status=status.HTTP_200_OK)

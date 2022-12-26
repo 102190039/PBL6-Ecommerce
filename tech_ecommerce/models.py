@@ -5,6 +5,7 @@ from django.db import models
 from authenticate.models import Seller, UserProfile
 from django.db.models.signals import pre_delete,post_save
 from django.dispatch import receiver
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Categories(models.Model):
@@ -33,7 +34,7 @@ class Products(models.Model):
 @receiver(post_save, sender=Products)
 def save_product(sender,instance, **kwargs):
     instance.slug = f"/product/{instance.pk}/"
-    instance.price = instance.original_price* instance.discount_rate /100.0
+    instance.price = instance.original_price* (100.0-instance.discount_rate) /100.0
     instance.modified_at = datetime.datetime.today()
     instance.category.total += 1
     instance.category.save()
@@ -78,6 +79,8 @@ class ProductChilds(models.Model):
     selected = models.BooleanField(default=False, blank=True)
     thumbnail_url = models.URLField(max_length=256, null=True, blank=True)
     name_url = models.CharField(max_length=256, null=True, blank=True)
+    option1 = models.CharField(max_length=256, null=True, blank=True)
+    option2 = models.CharField(max_length=256, null=True, blank=True)
 
 
 class ProductVariants(models.Model):
@@ -91,7 +94,14 @@ class Options(models.Model):
     product_variant = models.ForeignKey(ProductVariants, on_delete=models.CASCADE, related_name='options')
     product_child = models.ForeignKey(ProductChilds, on_delete=models.CASCADE,related_name='options')
     value = models.CharField(max_length=100)
-    
+@receiver(post_save, sender=Options)
+def save_option(sender,instance, **kwargs):
+    child= instance.product_child
+    if instance.product_variant == "Màu":
+        child.option1 = instance.value
+    if instance.product_variant == "Dung Lượng":
+        child.option2 = instance.value
+    child.save()   
 
 class CartItem(models.Model):
     user = models.ForeignKey(UserProfile, on_delete=models.CASCADE,related_name='cart_items')
@@ -101,13 +111,13 @@ class CartItem(models.Model):
 
 @receiver(pre_delete, sender = CartItem)
 def delete_cart(sender,instance,*args,**kwargs):
-    userProfile = instance.user_profile
-    userProfile.item_count -= 1
-    userProfile.save()
+    user = instance.user
+    user.cart_count = user.cart_count-1 if user.cart_count>0 else 0
+    user.save()
 
 class Interactive(models.Model):
     product = models.ForeignKey(Products, on_delete=models.CASCADE,related_name='interactives')
-    user = models.ForeignKey(UserProfile, on_delete=models.CASCADE,related_name='interactive')
+    user = models.ForeignKey(User, on_delete=models.CASCADE,related_name='interactive')
     favorite = models.BooleanField(default=True)
     comment = models.TextField()
     link = models.URLField(max_length=255, null=True, blank=True)

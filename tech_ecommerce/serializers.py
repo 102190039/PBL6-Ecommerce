@@ -128,8 +128,9 @@ class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Products
         fields = '__all__'     
-        extra_kwargs = {'seller': {'required': False}} 
+        extra_kwargs = {'seller': {'required': False}}
         create_only_fields = ('category','seller', 'img_products','product_variants')
+        read_only_fields = ('slug','price','rating_average','quantity_sold','review_count')
     def to_representation(self, instance):
         response = super().to_representation(instance)
         response['img_products'] = ImgProductSerializer(instance.img_products,many=True).data
@@ -195,6 +196,9 @@ class CartItemSerializer(serializers.ModelSerializer):
             "name" : instance.product_child.name,
             "price" : instance.product_child.price,
             "thumbnail_url":instance.product_child.thumbnail_url,
+            "option1":instance.product_child.option1,
+            "option2":instance.product_child.option2,
+            
         }
         return response
     def CalTotalPrice(self, quantity, product_child):
@@ -221,7 +225,14 @@ class InteractiveSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interactive
         fields = '__all__'
-    
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['user'] = {
+            "id": instance.user.pk,
+            "name":instance.user.first_name,
+            "avt" : f'/{instance.user.user_profile.avt}',          
+        }
+        return response
 
 
 

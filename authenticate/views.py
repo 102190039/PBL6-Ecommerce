@@ -1,8 +1,7 @@
 
 import traceback
 from django.contrib.auth.models import Group
-from django.http.request import QueryDict,MultiValueDict
-from django.shortcuts import get_object_or_404
+from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework_simplejwt.views import TokenObtainPairView
 from authenticate.models import Seller, UserProfile
 from authenticate.serializers import AdminSerializer, AvtSerializer, GroupSerializer, LoginSerializer, SellerSerializer, PasswordSerializer, UserSerializer
@@ -33,7 +32,6 @@ def get_tokens_for_user(user):
         'access': str(refresh.access_token),
     }
 
-
 class Logout(APIView):
     permission_classes=[AllowAny]
     def post(self,request):
@@ -43,14 +41,14 @@ class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
     
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        # serializer = self.serializer_class(data=request.data)
         usernameData = request.data.get("username")
         passwordData = request.data.get("password")
         user = authenticate(request=request,
             username=usernameData,
             password=passwordData
         )
-        if user and serializer.is_valid():
+        if user and user.is_active:
             token = get_tokens_for_user(user)
             role = []
             for group in user.groups.all():
@@ -66,20 +64,43 @@ class LoginView(TokenObtainPairView):
                 "token": token,
             }, status=status.HTTP_200_OK)
         else:
+            user = User.objects.filter(username=usernameData)        
+            user.delete()
             return Response({
-                    "massage": "Login is failed",
-                    "error": "username or password is not correct"
+                    "ERROR": "username or password is not correct"
                 }, status=status.HTTP_400_BAD_REQUEST)
+class ComfirmAccount(APIView):
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'comfirm.html'
+    permission_classes = (AllowAny,)
 
+    def get(self, request):
+        try:
+            id= request.query_params['id']
+            user = User.objects.get(pk=id)
+            user.is_active=True
+            user.save()
+            currentSite = get_current_site(request).domain
+            realativeLink = reverse('login_token')
+            url = 'http://' + currentSite + realativeLink
+            return Response({
+                'name': user.first_name,
+                'login': url 
+            })
+        except Exception as e:
+            traceback.print_exc()
+            return Response({
+                'ERROR': '',
+            }, status=status.HTTP_400_BAD_REQUEST)
 
 # Register user
 class UserView(ViewSet):
-    serializer_class = UserSerializer
+    # serializer_class = UserSerializer
 
     def get_permissions(self):
         if self.action in [ 'retrieve', 'update']:
             return [IsAuthenticated(), ]
-        if self.action in ['create']:
+        if self.action in ['create','comfirm_account']:
             return [AllowAny(), ]
         return super().get_permissions()
 
@@ -94,54 +115,79 @@ class UserView(ViewSet):
              return Response({
                     "error": f'Exception: {e}'
                 }, status=status.HTTP_404_NOT_FOUND)
-        
-    def create(self, request):
-        serializer = self.serializer_class(data=request.data)
-        emailData = request.data["email"]
-        usernameData = request.data["username"]
-        passwordData = request.data["password"]
+
+    @action(methods=['GET'],detail=False,permission_classes=[AllowAny])    
+    def comfirm_account(self, request):
         try:
-            isValidEmail = validate_email(emailData, verify=True,smtp_timeout=20)
+            id= request.query_params['id']
+            user = User.objects.get(pk=id)
+            user.is_active=True
+            user.save()
+            currentSite = get_current_site(request).domain
+            realativeLink = reverse('login_token')
+            url = 'http://' + currentSite + realativeLink
+            return Response({
+                'message': 'Comfirm successfully',
+                'login': url 
+            }, status=status.HTTP_202_ACCEPTED)
+        except Exception as e:
+            traceback.print_exc()
+            return Response({
+                'ERROR': '',
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def create(self, request):
+        data= request.data
+        data['is_active'] = False
+        serializer = UserSerializer(data=data)
+        emailData = data["email"]
+        # try:
+        #     isValidEmail = validate_email(emailData, verify=True,smtp_timeout=20)
+        # except:
+        #     traceback.print_exc()
+        # if isValidEmail:
+        if not serializer.is_valid():
+            return Response({
+                "ERROR": serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
+        # if User.objects.filter(username=usernameData).exists():
+        #     return Response({
+        #         "ERROR": "This email or username is exist!"
+        #     }, status=status.HTTP_400_BAD_REQUEST)
+
+        serializer.save()
+        try:
+        # isValidEmail = validate_email(emailData, verify=True)
+            currentSite = get_current_site(request).domain
+            realativeLink = reverse('comfirm_account')
+            url = 'http://' + currentSite + realativeLink+f'?id={serializer.data["id"]}'
+            send_mail(
+                subject='Confirm Registration: PBL6 Tech E',
+                message=  'Thank you for registering with Tech E! \n'
+                        + f'This email is confirmation that the user {serializer.data["first_name"]} is registering for a new account.\n'
+                        + 'Click here to finish the registration process: '+ url,
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[emailData]
+            )
+            return Response({
+                "message": "Registration Success!",
+                'detail': 'Please check your mail to complete register!!!',
+            }, status=status.HTTP_200_OK)
         except:
             traceback.print_exc()
-        if isValidEmail:
-            if not serializer.is_valid():
-                return Response({
-                    "ERROR": serializer.errors,
-                }, status=status.HTTP_400_BAD_REQUEST)
-            # if User.objects.filter(username=usernameData).exists():
-            #     return Response({
-            #         "ERROR": "This email or username is exist!"
-            #     }, status=status.HTTP_400_BAD_REQUEST)
+            return Response({
+                'ERROR': 'Email not exist! Please re-enter email!!!',
+            }, status=status.HTTP_400_BAD_REQUEST)
 
-            serializer.save()
-            try:
-            # isValidEmail = validate_email(emailData, verify=True)
-        
-                send_mail(
-                    subject='Register account user is success!',
-                    message='Your information account: \nusername: ' +
-                    usernameData+'\npassword: '+passwordData,
-                    from_email=settings.EMAIL_HOST_USER,
-                    recipient_list=[emailData]
-                )
-                return Response({
-                    "message": "Registration Success!",
-                    'detail': 'Please check your mail to complete register!!!',
-                }, status=status.HTTP_200_OK)
-            except:
-                traceback.print_exc()
-                return Response({
-                    'ERROR': 'Email not exist! Please re-enter email!!!',
-                }, status=status.HTTP_400_BAD_REQUEST)
-        return Response({
-            'ERROR': 'Email not exist! Please re-enter email!!!',
-        }, status=status.HTTP_400_BAD_REQUEST)
+        # return Response({
+        #     'ERROR': 'Email not exist! Please re-enter email!!!',
+        # }, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request,pk):     
         try:
             user = User.objects.get(pk=pk)          
-            serializer = self.serializer_class(instance=user,data=request.data)
+            serializer = UserSerializer(instance=user,data=request.data)
             if not serializer.is_valid():
                 return Response({
                     "ERROR": serializer.errors,
@@ -361,8 +407,7 @@ class PasswordView(APIView):
         serializer = PasswordSerializer(data=request.data)
         if not serializer.is_valid():
             return Response({
-                "message": "Reset password is Failed!",
-                "error": serializer.errors,
+                "ERROR": serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
         emailData = request.data["email"]
         isValidEmail = validate_email(emailData, verify=True)
@@ -387,12 +432,10 @@ class PasswordView(APIView):
                     'detail': 'Please check your mail to complete register!!!',
                 }, status=status.HTTP_202_ACCEPTED,)
             return Response({
-                "message": "Reset password is Failed!",
-                'error': 'Email current have not in database! Please re-enter email!!!',
+                'ERROR': 'Email current have not in database! Please re-enter email!!!',
             }, tatus=status.HTTP_400_BAD_REQUEST)
         return Response({
-            "message": "Reset password is Failed!",
-            'error': 'Email not exist! Please re-enter email!!!',
+            'ERROR': 'Email not exist! Please re-enter email!!!',
         }, status=status.HTTP_400_BAD_REQUEST)
 
     #change password
@@ -406,11 +449,11 @@ class PasswordView(APIView):
                 confirmNewpass = serializer.data['confirm_newpass']
                 if not user.check_password(oldPassword):
                     return Response({
-                        'error':'old_password is incorrect!'
+                        'ERROR':'old_password is incorrect!'
                     }, status=status.HTTP_400_BAD_REQUEST)
                 if confirmNewpass != newPassword:
                     return Response({   
-                        'error':'confirm_password is incorrect!'
+                        'ERROR':'confirm_password is incorrect!'
                     }, status=status.HTTP_400_BAD_REQUEST)
                 user.set_password(serializer.data['new_password'])
                 user.save()
@@ -419,8 +462,7 @@ class PasswordView(APIView):
                     "data":serializer.data
                 }, status=status.HTTP_202_ACCEPTED)
             return Response({
-                'message':'changepassword is fail!',
-                'errors': serializer.errors
+                'ERROR': serializer.errors
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
