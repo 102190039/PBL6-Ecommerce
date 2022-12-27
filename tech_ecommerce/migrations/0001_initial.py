@@ -124,7 +124,7 @@ class Migration(migrations.Migration):
                 ('quantity', models.IntegerField(blank=True, default=0)),
                 ('total_price', models.FloatField(blank=True, default=0)),
                 ('product_child', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cart_items', to='tech_ecommerce.productchilds')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cart_items', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cart_items', to='authenticate.userprofile')),
             ],
         ),
     ]

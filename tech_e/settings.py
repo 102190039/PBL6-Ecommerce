@@ -86,27 +86,27 @@ WSGI_APPLICATION = 'tech_e.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'pbl6_tech_e',
-#         'USER': 'root',
-#         'PASSWORD': '123456@Qwert',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
-#config Database progressql on heroku
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'd8lmg0525poe0i',
-        'USER': 'arqennoinhuscz',
-        'PASSWORD': 'cddbb1aaff221a5c83c8327c36851f928dc55f7af67ab709dcdd3f1e930951f8',
-        'HOST': 'ec2-3-213-228-206.compute-1.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'pbl6_tech_e',
+        'USER': 'root',
+        'PASSWORD': '123456@Qwert',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
+# #config Database progressql on heroku
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'd8lmg0525poe0i',
+#         'USER': 'arqennoinhuscz',
+#         'PASSWORD': 'cddbb1aaff221a5c83c8327c36851f928dc55f7af67ab709dcdd3f1e930951f8',
+#         'HOST': 'ec2-3-213-228-206.compute-1.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation

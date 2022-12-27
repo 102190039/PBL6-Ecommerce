@@ -50,8 +50,8 @@ class PayOut(models.Model):
 
 
 class Payment(models.Model):
-    pay_out = models.ForeignKey(PayOut, on_delete=models.CASCADE, related_name='payment', null=True, blank=True)
-    pay_in = models.ForeignKey(PayIn, on_delete=models.CASCADE, related_name='payment', null=True, blank=True)
+    pay_out = models.ForeignKey(PayOut, on_delete=models.CASCADE, related_name='payments', null=True, blank=True)
+    pay_in = models.ForeignKey(PayIn, on_delete=models.CASCADE, related_name='payments', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True, blank=True)
     money = models.FloatField()
 
@@ -62,4 +62,10 @@ class PurchasedProduct(models.Model):
     ('canceled', 'canceled')]
     user= models.ForeignKey(User, on_delete=models.CASCADE, related_name='purchased_products')
     product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='purchased_products')
+    quantity = models.IntegerField(default=1)
+    total_price = models.FloatField(default=0)
+    seller = models.ForeignKey(Seller, on_delete=models.CASCADE, related_name='purchased_products')
     status_purchase= models.CharField(max_length=20, choices = STATUS_PURCHASE, default='delivering')
+# @receiver(post_save, sender=PurchasedProduct)
+# def save_purchase(sender,instance, **kwargs):
+#     instance.seller_id = instance.product.seller_id

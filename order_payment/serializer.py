@@ -1,7 +1,7 @@
 
 from rest_framework import serializers
 from authenticate.models import Seller
-from order_payment.models import Order, OrderDetail, PayIn, PurchasedProduct
+from order_payment.models import Order, OrderDetail, PayIn, PayOut, Payment, PurchasedProduct
 from tech_ecommerce.models import CartItem, ProductChilds
 
 class OrderDetailSerializer(serializers.ModelSerializer):
@@ -45,7 +45,6 @@ class OrderSerializer(serializers.ModelSerializer):
             total_price = 0,
             order_count = numberOrder,
         )
-        subPrice = 0
         for i in range(0, numberOrder):
             item = cartItems[i]
             # get child from cart_item
@@ -58,12 +57,8 @@ class OrderSerializer(serializers.ModelSerializer):
                 order = order,
                 seller_id = sellerId,
                 quantity =  item.quantity,
-                total_price =  item.total_price,
+                total_price =  item.total_price/25000,
             )
-        #     subPrice += item.total_price
-            # item.delete()
-        # order.total_price = subPrice
-        # order.save()
         return order
 
 # ------------------------ Payment ------------------------
@@ -74,7 +69,7 @@ class PayInSerializer(serializers.ModelSerializer):
         fields = '__all__'
     def create(self, validated_data):
         # convert VND to USD
-        numberMoney = validated_data.get('number_money')/25000
+        numberMoney = validated_data.get('number_money')
         payIn = PayIn.objects.create(
             order= validated_data.get('order'),
             number_money= numberMoney,
@@ -84,11 +79,39 @@ class PayInSerializer(serializers.ModelSerializer):
 class PurchasedProductSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['order'] = OrderSerializer(instance.order).data
+        response['user'] = {
+            "id": instance.user.id,
+            "name": instance.user.first_name,
+            "avt": f'/{instance.user.user_profile.avt}',
+        }
+        response['seller'] = {
+            "id": instance.seller.pk,
+            "name_store": instance.seller.name_store,
+            "logo": f'/{instance.seller.logo}',
+        }
+        response['product'] = {
+            "id": instance.product.id,
+            "name": instance.product.name,
+        }
         return response
 
     class Meta:
         model= PurchasedProduct
-        fields = ['status_purchase']
+        fields = ['status_purchase','quantity','total_price']
+
+class PaymentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Payment
+        fields = ['created_at','money']
+
+class PayOutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= PayOut
+        fields = ['current_balance']
+    
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['payments']= PaymentSerializer(instance=instance.payments, many=True).data
+        return response
 
         

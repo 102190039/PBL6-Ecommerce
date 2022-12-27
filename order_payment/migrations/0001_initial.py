@@ -49,8 +49,11 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('status_purchase', models.CharField(choices=[('delivering', 'delivering'), ('delivered', 'delivered'), ('canceled', 'canceled')], default='delivering', max_length=20)),
+                ('quantity', models.IntegerField(default=1)),
+                ('total_price', models.FloatField(default=0)),
                 ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='purchased_products', to='tech_ecommerce.products')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='purchased_products', to=settings.AUTH_USER_MODEL)),
+                ('seller', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='purchased_products',  to='authenticate.seller')),
             ],
         ),
         migrations.CreateModel(
@@ -59,8 +62,8 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('money', models.FloatField()),
-                ('pay_in', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='payment', to='order_payment.payin')),
-                ('pay_out', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='payment', to='order_payment.payout')),
+                ('pay_in', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='payments', to='order_payment.payin')),
+                ('pay_out', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='payments', to='order_payment.payout')),
             ],
         ),
         migrations.CreateModel(

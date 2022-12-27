@@ -64,7 +64,7 @@ class LoginView(TokenObtainPairView):
                 "token": token,
             }, status=status.HTTP_200_OK)
         else:
-            user = User.objects.filter(username=usernameData)        
+            user = User.objects.filter(username=usernameData,password=passwordData)        
             user.delete()
             return Response({
                     "ERROR": "username or password is not correct"
@@ -142,19 +142,15 @@ class UserView(ViewSet):
         data['is_active'] = False
         serializer = UserSerializer(data=data)
         emailData = data["email"]
+        if not serializer.is_valid():
+            return Response({
+                "ERROR": serializer.errors,
+            }, status=status.HTTP_400_BAD_REQUEST)
         # try:
         #     isValidEmail = validate_email(emailData, verify=True,smtp_timeout=20)
         # except:
         #     traceback.print_exc()
         # if isValidEmail:
-        if not serializer.is_valid():
-            return Response({
-                "ERROR": serializer.errors,
-            }, status=status.HTTP_400_BAD_REQUEST)
-        # if User.objects.filter(username=usernameData).exists():
-        #     return Response({
-        #         "ERROR": "This email or username is exist!"
-        #     }, status=status.HTTP_400_BAD_REQUEST)
 
         serializer.save()
         try:
