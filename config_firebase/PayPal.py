@@ -25,7 +25,7 @@ class PayPal():
         return token.json()['access_token']
 
     # Create a order to Paypal
-    def CreateOrder(self,pay_in_id,money,user_id): 
+    def CreateOrder(self,pay_in_id,money,user_id,currentSite): 
         token = self.GetToken()
         headers = {
             'Content-Type': 'application/json',
@@ -35,8 +35,8 @@ class PayPal():
             "intent": "CAPTURE",
             "application_context": {
                 # Return url when checkout successful
-                "return_url": f"http://127.0.0.1:8000/tech/checkout-paypal/{pay_in_id}/succeeded/?user_id={user_id}",
-                "cancel_url": f"http://127.0.0.1:8000/tech/checkout-paypal/{pay_in_id}/failed/", 
+                "return_url": f"http://{currentSite}/tech/checkout-paypal/{pay_in_id}/succeeded/?user_id={user_id}",
+                "cancel_url": f"http://{currentSite}/tech/checkout-paypal/{pay_in_id}/failed/", 
                 "brand_name": "PBL6 Tech E",
                 "shipping_preference": "NO_SHIPPING",
                 "user_action": "CONTINUE"

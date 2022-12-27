@@ -28,6 +28,7 @@ def save_order_detail(sender,instance, **kwargs):
     product.save()
     order = instance.order
     order.total_price+= instance.total_price
+    order.order_count +=1
     order.save()
     
 

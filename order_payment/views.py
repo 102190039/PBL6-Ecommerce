@@ -11,6 +11,8 @@ from order_payment.serializer import OrderDetailSerializer, OrderSerializer, Pay
 from rest_framework import status
 from rest_framework.decorators import action
 import requests
+from django.contrib.sites.shortcuts import get_current_site
+
 
 class OrderViewSet(ViewSet):
     def get_permissions(self):
@@ -242,7 +244,7 @@ class PayInViewSet(ViewSet):
         try:
             data= request.data
             userId = self.request.user.id
-            order=Order.objects.get(user_id=userId,pk= data['order'])
+            Order.objects.get(user_id=userId,pk= data['order'])
             serializer = PayInSerializer(data = data)
 
             if not serializer.is_valid():
@@ -255,8 +257,8 @@ class PayInViewSet(ViewSet):
             if data['type_payment']=="online":
                 pay_in_id= int(serializer.data['id'])
                 money= float(serializer.data['number_money']) 
-
-                linkForPayment=PayPal().CreateOrder(pay_in_id, money,userId)   
+                currentSite = get_current_site(request).domain
+                linkForPayment=PayPal().CreateOrder(pay_in_id, money,userId,currentSite)   
                 if linkForPayment=="ERROR":  
                     return Response({'ERROR'}, status=status.HTTP_400_BAD_REQUEST)
                 return Response({'link_payment': linkForPayment}, status=status.HTTP_200_OK)
