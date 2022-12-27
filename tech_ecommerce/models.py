@@ -3,7 +3,7 @@
 import datetime
 from django.db import models
 from authenticate.models import Seller, UserProfile
-from django.db.models.signals import pre_delete,post_save
+from django.db.models.signals import pre_delete,post_save,pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
 
@@ -31,8 +31,8 @@ class Products(models.Model):
     quantity_sold = models.IntegerField(default=0, blank=True)
     review_count = models.IntegerField(default=0, blank=True) 
     
-@receiver(post_save, sender=Products)
-def save_product(sender,instance, **kwargs):
+@receiver(pre_save, sender=Products)
+def pre_save_product(sender,instance, **kwargs):
     instance.slug = f"/product/{instance.pk}/"
     instance.price = instance.original_price* (100.0-instance.discount_rate) /100.0
     instance.modified_at = datetime.datetime.today()

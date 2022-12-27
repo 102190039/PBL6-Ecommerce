@@ -66,7 +66,6 @@ class PayPal():
         # payOut= PayOut.objects.get(id=pay_out_id)
         token = self.GetToken()
         now = datetime.datetime.today()
-        print(now)
         headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer '+ token,

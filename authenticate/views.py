@@ -64,8 +64,15 @@ class LoginView(TokenObtainPairView):
                 "token": token,
             }, status=status.HTTP_200_OK)
         else:
-            user = User.objects.filter(username=usernameData,password=passwordData)        
-            user.delete()
+            try:
+                user = User.objects.get(username=usernameData) 
+                if user.is_active != True:       
+                    user.delete()
+                return Response({
+                        "ERROR": "username or password is not correct"
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            except:
+                pass
             return Response({
                     "ERROR": "username or password is not correct"
                 }, status=status.HTTP_400_BAD_REQUEST)

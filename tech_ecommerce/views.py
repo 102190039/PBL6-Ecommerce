@@ -1,7 +1,7 @@
 import traceback
+import time
 from django.http.request import QueryDict, MultiValueDict
-from rest_framework import generics, viewsets
-from rest_framework.decorators import api_view
+from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
@@ -73,24 +73,7 @@ class ProductViewSet(viewsets.ViewSet):
                 "ERROR": serialierProduct.errors
             }, status=status.HTTP_404_NOT_FOUND)
 
-        product = serialierProduct.save()
-        # for file in request.FILES.getlist('img_products'):
-        #     file_save = default_storage.save("pictures/"+file.name, file)
-        #     storage.child("multi/" + file.name).put("pictures/"+file.name)
-        #     delete = default_storage.delete("pictures/"+file.name)
-        #     url = storage.child("multi/" + file.name).get_url(None)
-        #     data = {'product': [product.id], 'link': [url]}
-        #     qdict = QueryDict('', mutable=True)
-        #     qdict.update(MultiValueDict(data))
-
-        #     serializerImg = ImgProductSerializer(data=qdict)
-        #     if not serializerImg.is_valid():
-        #         return Response({
-        #             'message': "File upload is failed!",
-        #             'error': serializerImg.errors,
-        #         }, status=status.HTTP_400_BAD_REQUEST)
-        #     serializerImg.save()
-
+        serialierProduct.save()
         return Response({
             "message": "Create product is success!",
             "data": serialierProduct.data
@@ -361,6 +344,7 @@ class ImgProductViewSet(viewsets.ViewSet):
                 # delete image after upload firebase
                 default_storage.delete("pictures/products/"+file.name)
                 url = storage.child("product_images/" + name_image).get_url(None)
+                url += f'&tempstamp={int(time.time())}'
                 data={'product': [product.id], 'link': [url], 'name': [name_image]}
 
                 qdict = QueryDict('', mutable=True)
@@ -374,6 +358,7 @@ class ImgProductViewSet(viewsets.ViewSet):
 
             return Response({
                 'message': "Uploading product image is successful",
+                "data": serializer.data
             }, status=status.HTTP_201_CREATED)
         except Exception as e:
             traceback.print_exc()
@@ -747,7 +732,6 @@ class ProductListView(viewsets.ModelViewSet):
         return super().get_permissions()
 
     def list(self, request, *args, **kwargs):
-        print(request.query_params)
         return super().list(request, *args, **kwargs)
 
     @action(methods=['GET'], detail=False, permission_classes=[AllowAny], url_path="hot")
@@ -930,7 +914,7 @@ class InteractiveViewSet(viewsets.ViewSet):
         try:
             Interactive.objects.get(user_id=userId, product =data['product'])
             return Response({
-                "ERROR": "Not allowed to evaluated!"
+                "ERROR": "Only evaluated one time!"
             }, status=status.HTTP_403_FORBIDDEN)
         except:
             try :

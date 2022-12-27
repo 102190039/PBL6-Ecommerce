@@ -57,7 +57,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 order = order,
                 seller_id = sellerId,
                 quantity =  item.quantity,
-                total_price =  item.total_price/25000,
+                total_price =  item.total_price
             )
         return order
 

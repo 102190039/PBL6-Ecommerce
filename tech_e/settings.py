@@ -205,8 +205,10 @@ MEDIA_ROOT  = os.path.join(BASE_DIR, '')
 MEDIA_URL = '/'
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'pbl6teche@gmail.com'
-EMAIL_HOST_PASSWORD = 'lwtjubfxoqxtvdoc'
+# EMAIL_HOST_USER = 'pbl6teche@gmail.com'
+# EMAIL_HOST_PASSWORD = 'lwtjubfxoqxtvdoc'
+EMAIL_HOST_USER = 'techeshop001@gmail.com'
+EMAIL_HOST_PASSWORD = 'ehiulhrdjfhlpezh'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

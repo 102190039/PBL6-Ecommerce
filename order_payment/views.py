@@ -256,7 +256,7 @@ class PayInViewSet(ViewSet):
 
             if data['type_payment']=="online":
                 pay_in_id= int(serializer.data['id'])
-                money= float(serializer.data['number_money']) 
+                money= float(serializer.data['number_money'])/25000
                 currentSite = get_current_site(request).domain
                 linkForPayment=PayPal().CreateOrder(pay_in_id, money,userId,currentSite)   
                 if linkForPayment=="ERROR":  
